@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apologies from Aaruk 🌸</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #fdf6ee;
+      --rose: #e8a0a0;
+      --blush: #f2c4c4;
+      --deep: #7a3e3e;
+      --mid: #b06060;
+      --text: #4a2828;
+      --light-text: #8a5a5a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      font-family: 'Jost', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── PETALS ── */
+    .petals-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      top: -60px;
+      font-size: 1.4rem;
+      opacity: 0;
+      animation: fallPetal linear infinite;
+    }
+    @keyframes fallPetal {
+      0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
+      10%  { opacity: 0.7; }
+      90%  { opacity: 0.4; }
+      100% { opacity: 0; transform: translateY(110vh) rotate(360deg); }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      z-index: 1;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 40%, #fce8e8cc 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--mid);
+      border: 1px solid var(--blush);
+      padding: 0.4rem 1.2rem;
+      border-radius: 999px;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--deep);
+      animation: fadeUp 0.9s 0.15s ease both;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--mid);
+    }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      color: var(--light-text);
+      font-style: italic;
+      animation: fadeUp 0.9s 0.3s ease both;
+    }
+
+    .scroll-hint {
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--mid);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      animation: fadeUp 1s 0.5s ease both, bounce 2s 1.5s ease-in-out infinite;
+    }
+    .scroll-hint svg { width: 24px; opacity: 0.6; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(8px); }
+    }
+
+    /* ── APOLOGY SECTION ── */
+    .apology {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    .divider {
+      text-align: center;
+      margin-bottom: 3rem;
+      color: var(--blush);
+      font-size: 1.8rem;
+      letter-spacing: 0.5rem;
+    }
+
+    .apology-card {
+      background: #fff8f5;
+      border: 1px solid #f0d5d5;
+      border-radius: 24px;
+      padding: 3rem 3.5rem;
+      box-shadow: 0 8px 40px #e8a0a01a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .apology-card::before {
+      content: '❝';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      color: #f0d5d5;
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      line-height: 1;
+    }
+
+    .apology-card p {
+      position: relative;
+      font-size: 1.1rem;
+      line-height: 1.9;
+      color: var(--text);
+      margin-bottom: 1.4rem;
+    }
+
+    .apology-card p:last-child { margin-bottom: 0; }
+
+    .apology-card .signature {
+      margin-top: 2.5rem;
+      text-align: right;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--mid);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── MORE BUTTON ── */
+    .more-section {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 4rem 2rem 6rem;
+    }
+
+    .more-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--deep);
+      color: #fff8f5;
+      font-family: 'Jost', sans-serif;
+      font-size: 1rem;
+      font-style: italic;
+      padding: 1rem 2.5rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 20px #7a3e3e40;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .more-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 30px #7a3e3e55;
+      background: var(--mid);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* mobile */
+    @media (max-width: 600px) {
+      .apology-card { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Falling petals -->
+<div class="petals-container" id="petals"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">a message for you 🌸</div>
+  <h1 class="hero-title">Apologies<br/><em>from Aaruk</em></h1>
+  <p class="hero-sub">I messed up. And I know it.</p>
+  <div class="scroll-hint">
+    <span>scroll down</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12l7 7 7-7"/>
+    </svg>
+  </div>
+</section>
+
+<!-- APOLOGY -->
+<section class="apology">
+  <div class="divider">✦ ✦ ✦</div>
+
+  <div class="apology-card reveal">
+    <p>
+      Hey. I said something I shouldn't have, and I directed it at you — and that was wrong.
+      I was stressed about my studies and instead of keeping it to myself, I let it spill over
+      onto you, and that's not fair. You didn't deserve that at all.
+    </p>
+    <p>
+      I want you to know that I genuinely didn't mean it the way it came out. I wasn't trying
+      to push you away or make you feel like you were a burden — you're not. You never were.
+      I just spoke without thinking, and I hate that it hurt you.
+    </p>
+    <p>
+      We've always had small fights like this with each other from the beginning. And I don't want one careless moment
+      to change that. You mean too much to me for me to just let this sit between us.
+    </p>
+    <p>
+      I'm sorry. Genuinely, honestly, fully — I'm sorry. 
+    </p>
+    <div class="signature">— Aaruk</div>
+  </div>
+</section>
+
+<!-- MORE BUTTON -->
+<div class="more-section reveal">
+  <a href="question.html" class="more-btn">
+    Press for more &nbsp;→
+  </a>
+</div>
+
+<script>
+  // Falling petals
+  const container = document.getElementById('petals');
+  const emojis = ['🌸', '🌷', '✿', '❀', '🌺', '💮'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (6 + Math.random() * 8) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.fontSize = (1 + Math.random() * 0.8) + 'rem';
+    container.appendChild(p);
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+</body>
+</html>

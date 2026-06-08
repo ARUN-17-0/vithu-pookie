@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A Question</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #fdf6ee;
+      --blush: #f2c4c4;
+      --deep: #7a3e3e;
+      --mid:  #b06060;
+      --text: #4a2828;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+    }
+
+    body {
+      background: var(--cream);
+      font-family: 'Jost', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse at 25% 25%, #fce8e8bb 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 75%, #fde8d4bb 0%, transparent 55%);
+      z-index: 0;
+    }
+
+    /* petals */
+    .petals-container {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 1; overflow: hidden;
+    }
+    .petal {
+      position: absolute; top: -60px; opacity: 0;
+      animation: fallPetal linear infinite;
+    }
+    @keyframes fallPetal {
+      0%   { opacity: 0;   transform: translateY(0)     rotate(0deg); }
+      10%  { opacity: 0.5; }
+      90%  { opacity: 0.3; }
+      100% { opacity: 0;   transform: translateY(110vh) rotate(360deg); }
+    }
+
+    /* card */
+    .card {
+      position: relative; z-index: 2;
+      background: #fff8f5;
+      border: 1px solid #f0d5d5;
+      border-radius: 28px;
+      padding: 4rem 3.5rem;
+      max-width: 500px; width: 90%;
+      text-align: center;
+      box-shadow: 0 12px 50px #e8a0a022;
+      animation: cardIn 0.7s cubic-bezier(.22,.68,0,1.2) both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(60px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+
+    .icon {
+      font-size: 2.8rem; display: block; margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeIn 0.5s 0.5s ease forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    .question {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.7rem, 5vw, 2.4rem);
+      font-weight: 600;
+      color: var(--deep);
+      line-height: 1.3;
+      min-height: 3.2em;
+      margin-bottom: 3rem;
+    }
+    .cursor {
+      display: inline-block;
+      width: 2px; height: 1em;
+      background: var(--mid);
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: blink 0.75s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* No button — normal flow */
+    .no-wrap {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .no-wrap.show { opacity: 1; transform: translateY(0); }
+
+    .btn {
+      font-family: 'Jost', sans-serif;
+      font-size: 1rem; font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 0.8rem 2.2rem;
+      border-radius: 999px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+    }
+    .btn-no {
+      background: var(--deep);
+      color: #fff8f5;
+      border-color: var(--deep);
+      box-shadow: 0 4px 18px #7a3e3e35;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .btn-no:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 8px 26px #7a3e3e50;
+    }
+
+    /* YES lives in a full-page overlay — absolutely positioned inside it */
+    #overlay {
+      position: fixed; inset: 0;
+      pointer-events: none;   /* overlay itself doesn't block clicks */
+      z-index: 999;
+    }
+    #yesBtn {
+      position: absolute;
+      pointer-events: all;
+      background: transparent;
+      color: var(--mid);
+      border: 1.5px solid var(--blush);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    #yesBtn.visible { opacity: 1; }
+
+    /* tooltip */
+    #tip {
+      position: fixed;
+      background: var(--deep); color: #fff8f5;
+      font-family: 'Jost', sans-serif; font-size: 0.78rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      pointer-events: none; opacity: 0; z-index: 1000;
+      transition: opacity 0.2s; white-space: nowrap;
+    }
+    #tip.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<div class="petals-container" id="petals"></div>
+
+<!-- Yes button lives here, absolutely positioned within full viewport -->
+<div id="overlay">
+  <button class="btn" id="yesBtn">Yes</button>
+</div>
+
+<div id="tip">not happening 🌸</div>
+
+<div class="card">
+  <span class="icon">🥺</span>
+  <div class="question" id="qText"><span class="cursor" id="cursor"></span></div>
+  <div class="no-wrap" id="noWrap">
+    <button class="btn btn-no" id="noBtn">No</button>
+  </div>
+</div>
+
+<script>
+  /* ── PETALS ── */
+  const petalsEl = document.getElementById('petals');
+  ['🌸','🌷','✿','❀'].forEach(e => {
+    for (let i = 0; i < 3; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal'; p.textContent = e;
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.fontSize = (1 + Math.random() * 0.7) + 'rem';
+      p.style.animationDuration = (7 + Math.random() * 8) + 's';
+      p.style.animationDelay    = (Math.random() * 12) + 's';
+      petalsEl.appendChild(p);
+    }
+  });
+
+  /* ── TYPEWRITER ── */
+  const fullText = 'Do you hate Aaruk?';
+  const qEl      = document.getElementById('qText');
+  const cursorEl = document.getElementById('cursor');
+  const noWrap   = document.getElementById('noWrap');
+  const yesBtnEl = document.getElementById('yesBtn');
+  const tipEl    = document.getElementById('tip');
+  let charIdx    = 0;
+
+  function type() {
+    if (charIdx <= fullText.length) {
+      qEl.textContent = fullText.slice(0, charIdx);
+      qEl.appendChild(cursorEl);
+      charIdx++;
+      setTimeout(type, 65 + Math.random() * 40);
+    } else {
+      cursorEl.style.display = 'none';
+      noWrap.classList.add('show');
+      setTimeout(placeYes, 600);
+    }
+  }
+  setTimeout(type, 900);
+
+  /* ── PLACE YES NEAR NO ── */
+  let posX = 0, posY = 0;
+
+  function placeYes() {
+    const noRect = document.getElementById('noBtn').getBoundingClientRect();
+    // place Yes to the LEFT of No with a gap
+    posX = noRect.left - yesBtnEl.offsetWidth - 16;
+    posY = noRect.top;
+    yesBtnEl.style.left = posX + 'px';
+    yesBtnEl.style.top  = posY + 'px';
+    yesBtnEl.classList.add('visible');
+  }
+
+  /* ── FLEE ── */
+  const PAD = 12;
+
+  function flee(cx, cy) {
+    if (!yesBtnEl.classList.contains('visible')) return;
+
+    const w = yesBtnEl.offsetWidth;
+    const h = yesBtnEl.offsetHeight;
+    const bx = posX + w / 2;
+    const by = posY + h / 2;
+    const dx = bx - cx;
+    const dy = by - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    if (dist < 180) {
+      const nx = dx / dist;
+      const ny = dy / dist;
+      const force = (180 - dist) * 1.2;
+
+      posX += nx * force;
+      posY += ny * force;
+
+      // clamp within viewport
+      posX = Math.max(PAD, Math.min(window.innerWidth  - w - PAD, posX));
+      posY = Math.max(PAD, Math.min(window.innerHeight - h - PAD, posY));
+
+      yesBtnEl.style.left = posX + 'px';
+      yesBtnEl.style.top  = posY + 'px';
+
+      tipEl.style.left = (cx + 14) + 'px';
+      tipEl.style.top  = (cy - 12) + 'px';
+      tipEl.classList.add('show');
+    } else {
+      tipEl.classList.remove('show');
+    }
+  }
+
+  document.addEventListener('mousemove', e => flee(e.clientX, e.clientY));
+  document.addEventListener('touchmove', e => {
+    flee(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+
+  yesBtnEl.addEventListener('click', () => {
+    // nudge it away even on click
+    posX = Math.max(PAD, Math.min(window.innerWidth  - yesBtnEl.offsetWidth  - PAD, posX + 80));
+    posY = Math.max(PAD, Math.min(window.innerHeight - yesBtnEl.offsetHeight - PAD, posY - 60));
+    yesBtnEl.style.left = posX + 'px';
+    yesBtnEl.style.top  = posY + 'px';
+  });
+
+  document.getElementById('noBtn').addEventListener('click', () => {
+    window.location.href = 'thankyou.html';
+  });
+</script>
+</body>
+</html>
